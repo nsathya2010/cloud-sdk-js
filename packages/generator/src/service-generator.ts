@@ -17,7 +17,7 @@ import { getServiceEntitiesV4 } from './edmx-to-vdm/v4';
 import { getBasePath } from './service-base-path';
 
 class ServiceGenerator {
-  constructor(readonly options: ParsedGeneratorOptions) {}
+  constructor(readonly options: ParsedGeneratorOptions) { }
 
   public async generateAllServices(): Promise<VdmServiceMetadata[]> {
     return Promise.all(
@@ -54,15 +54,26 @@ class ServiceGenerator {
 
     const vdmServiceEntities = isV2Metadata(serviceMetadata.edmx)
       ? getServiceEntitiesV2(
-          serviceMetadata,
-          vdmServicePackageMetaData.className,
-          this.options.skipValidation
-        )
+        serviceMetadata,
+        vdmServicePackageMetaData.className,
+        this.options.skipValidation
+      )
       : getServiceEntitiesV4(
-          serviceMetadata,
-          vdmServicePackageMetaData.className,
-          this.options.skipValidation
-        );
+        serviceMetadata,
+        vdmServicePackageMetaData.className,
+        this.options.skipValidation
+      );
+
+    const commonEntities = ((selectedEntities) =>
+      vdmServiceEntities.entities.filter(entity =>
+        selectedEntities.includes(entity.entitySetName)
+      )
+    )(this.options.selectedEntities ?? []);
+
+    if (commonEntities.length > 0) {
+      vdmServiceEntities.entities = commonEntities;
+    }
+
 
     return {
       ...vdmServicePackageMetaData,

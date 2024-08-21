@@ -67,6 +67,13 @@ export function getCommonCliOptions(serviceType: ServiceType) {
       demandOption: true,
       requiresArg: true
     },
+    selectedEntities: {
+      type: 'array',
+      describe: 'An array of strings as input.',
+      entities: {
+        type: 'string'
+      }
+    },
     overwrite: {
       describe:
         'By default, the generator will exit when encountering a file that already exists. When set to true, it will be overwritten instead. Please note that compared to the --clearOutputDir option, this will not delete outdated files.',
@@ -153,6 +160,10 @@ export interface CommonGeneratorOptions {
    * Directory to save the generated code in.
    */
   outputDir: string;
+  /**
+   * An array of strings as input for which only selected entities will be generated.
+   */
+  selectedEntities?: string[];
   /**
    * Generate a `package.json` file, specifying dependencies and scripts for compiling.
    */
