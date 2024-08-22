@@ -64,6 +64,15 @@ class ServiceGenerator {
           this.options.skipValidation
         );
 
+    const commonEntities = (selectedEntities =>
+      vdmServiceEntities.entities.filter(entity =>
+        selectedEntities.includes(entity.entitySetName)
+      ))(this.options.selectedEntities ?? []);
+
+    if (commonEntities.length > 0) {
+      vdmServiceEntities.entities = commonEntities;
+    }
+
     return {
       ...vdmServicePackageMetaData,
       ...vdmServiceEntities,
